@@ -11,7 +11,7 @@ module.exports = function (context, fromOptions) {
     ...fromOptions
   };
 
-  const {apiKey} = segment;
+  const {apiKey, excludeUserAgents} = segment;
 
   if (!apiKey) {
     throw new Error('Unable to find a Segment `apiKey` in `plugin` options or `themeConfig`.');
@@ -46,6 +46,13 @@ module.exports = function (context, fromOptions) {
           {
             tagName: 'script',
             innerHTML: contents + '\n',
+          },
+          {
+            tagName: 'script',
+            innerHTML: `
+              window._docusaurusPluginSegment = {};
+              ${excludeUserAgents != null ? `window._docusaurusPluginSegment.excludeUserAgents = ${JSON.stringify(excludeUserAgents)};` : ``}
+            `,
           },
         ],
       };
